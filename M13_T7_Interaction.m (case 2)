@@ -8,8 +8,8 @@ I_T=0;% infected by T7
 I_M=0; %infected by M13
 I_TM=0; %infected by M13 and T7
 T7=5*10^3;  % Free phage T7
-M13=4^10;  % Free phage M13
-SIn=5.6*100; % Input concentration of susceptible cells
+M13=4^10^3;  % Free phage M13
+SIn=5.6*10^8; % Input concentration of susceptible cells
 SOut=0; % Output concentration of susceptible cells
 
 %%%%%latent periods%%%%%%%
