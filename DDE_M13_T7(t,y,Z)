@@ -1,0 +1,53 @@
+function v=DDE_M13_T7(t,y,Z)
+
+%%%%%%%%   control parameters   %%%%%%%5%%%%
+
+F=7; % flow rate
+V=2; % volume of vessel in ml
+D=F/V; % dilution rate
+
+SIn=5.6*10^8; % Input concentration of susceptible cells
+
+%%% binding rate
+bM=3*10^(-11); %% of M13 to S
+
+bT=1.75E-10; %% of T7 to S
+e=bT; %% of T7 to I_M
+d=0; %% of M13 to I_T
+
+%%% burst size of T7
+h=500;
+
+%%% decay rate 
+mT=0.009; %%  of M13
+mM=mT; %% of T7
+
+%%% growth rate 
+beta=0.02133; %% of I_M
+gamma=0.05; %% of M13
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+S=y(1);
+I_M=y(2);
+I_T=y(3);
+I_TM=y(4);
+T7=y(5);
+M13=y(6);
+
+%%% delay
+
+ylag1=Z(:,1);
+ylag2=Z(:,2);
+
+%%%%%%%%%   Solve the model   %%%%%%%%%%%
+v=zeros(6,1);
+
+v(1)= (1-(S<=0)*(-bT*S*T7-bM*S*M13+ D*SIn-D*S<0))*(-bT*S*T7-bM*S*M13+ D*SIn-D*S);
+v(2)= (1-(I_M<=0)*(bM*S*M13 + beta*I_M - e*T7*I_M- D*I_M<0))*(bM*S*M13 + beta*I_M - e*T7*I_M- D*I_M);
+v(3)=(1-(I_T<0)*(bT*S*T7 - bT*ylag1(5)*ylag1(1) - d*M13*I_T - D*I_T<0))*(bT*S*T7 - bT*ylag1(5)*ylag1(1) - d*M13*I_T - D*I_T);
+v(4)=(1-(I_TM<=0)*(bT*S*T7 + bM*S*M13 + e*T7*I_M + d*M13*I_T - bT*ylag2(1)*ylag2(5)-D*I_TM<0))*(bT*S*T7 + bM*S*M13 + e*T7*I_M + d*M13*I_T - bT*ylag2(1)*ylag2(5)-D*I_TM);
+v(5)=(1-(T7<=0)*(bT*S*T7 + bM*S*M13 + e*T7*I_M + d*M13*I_T - bT*ylag2(1)*ylag2(5)-D*I_TM<0))*(bT*h*ylag2(1)*ylag2(5) - beta*S*T7 - mT*T7 - e*T7*I_M - D*T7);
+v(6)=(1-(M13<=0)*(gamma*M13 - bM*M13*S - mM*T7 - d*M13*I_T - D*M13<0))*(gamma*M13 - bM*M13*S - mM*T7 - d*M13*I_T - D*M13);
+
+end
