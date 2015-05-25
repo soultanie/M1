@@ -1,0 +1,50 @@
+clear all
+close all
+
+%%%%%%%%control parameters%%%%%%%%5%%%%
+
+%Initial Concentrations
+I_T=0;% infected by T7
+I_M=0; %infected by M13
+I_TM=0; %infected by M13 and T7
+T7=5*10^3;  % Free phage T7
+M13=4^10;  % Free phage M13
+SIn=5.6*100; % Input concentration of susceptible cells
+SOut=0; % Output concentration of susceptible cells
+
+%%%%%latent periods%%%%%%%
+kT=12;
+kTM=12;
+lag=[kT,kTM]; 
+
+%%%%%%%%%%%%%%%%%%%%%%%% Solve the system%%%%%%%%%%%%%%%%%%%%%
+y=[SOut I_M  I_T  I_TM T7 M13 ];
+
+outputFile3 = 'Initial.txt';
+fidOF3 = fopen(outputFile3,'w');
+fprintf(fidOF3,'%.i 4f \t',y );
+fclose(fidOF3);
+
+t0=max(kT,kTM);
+tspan=[t0,20];
+
+state=+1;
+options=ddeset('Events',@MyEventFunction);
+tic
+
+sol=dde23(@DDE_M13_T7,[kT,kTM],y,tspan,options);
+
+%%%%%%save solutions in files%%%%%%%%%%%%%%%
+outputFile1 = 'Time.txt';
+fidOF1 = fopen(outputFile1,'w');
+fprintf(fidOF1,'%.4f \t', sol.x);
+fclose(fidOF1);
+
+outputFile2 = 'test.txt';
+fidOF2 = fopen(outputFile2,'w');
+for i=1:size(sol.y,1)
+    fprintf(fidOF2,'%.4f \t',sol.y(i,:));
+    fprintf(fidOF2,'\n');
+end
+fclose(fidOF2);
+
