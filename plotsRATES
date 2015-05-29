@@ -1,0 +1,82 @@
+clear all
+close all
+
+% f = 9;  %number of figures
+% c = 2;  %number of plots per column per figure
+% r = 3;  %number of plots per row per figure
+% n = repmat(cumsum(ones(1,r*c)),1,f);  %index for subplots
+% h = ceil( (1:f*r*c)/(r*c) ); %index of figures
+p=1;
+for n=1:3
+   
+  for m=1:3
+T7 = 10^n ; % Free phage T7
+M13 = 10^m ;
+
+
+%%%%%%%%%%%%%%%%% FOR FIXED (M13,T7) %%%%%%%%%%%%%%%%%%%%
+figure1=figure('Position', [10, 50, 1000, 600]);
+   %subplot( r,c,n(ii) )
+figure( p )
+p=p+1;
+fprintf('ok')
+
+
+for j=4:2:12
+for i=4:2:12
+    
+bT = 10^(-i); %% of T7 to S
+bM= 10^(-j) ;%% of M1
+
+T=importdata(strcat('t.M=',num2str(M13),'_T=',num2str(T7),'_bM=',num2str(bM),'_bT=',num2str(bT),'.txt'));
+v=importdata(strcat('v.M=',num2str(M13),'_T=',num2str(T7),'_bM=',num2str(bM),'_bT=',num2str(bT),'.txt'));
+
+
+k=rand(1,3);
+
+subplot(3,2,1)
+plot(T,v(1,:),'color',k,'LineWidth',1.5)
+xlim([T(1) T(end)])
+title('Susceptible cell')
+[~,~,~,current_entries] = legend;
+legend([current_entries {strcat('bM=',num2str(bM),'bT=',num2str(bT))}]);
+%legend([current_entries {strcat('M=',num2str(M13),'T=',num2str(T7),'bM=',num2str(bM),' bT=',num2str(bT))}]);
+hold on
+
+subplot(3,2,2)
+plot(T,v(2,:),'color',k,'LineWidth',1.5)
+xlim([T(1) T(end)])
+title(strcat('Infected cell by M13,Initial M13=',num2str(M13)))
+hold on
+
+subplot(3,2,3)
+plot(T,v(3,:),'color',k,'LineWidth',1.5)
+xlim([T(1) T(end)])
+title(strcat('Infected cell by T7,Initial T7=',num2str(T7)))
+hold on
+
+subplot(3,2,4)
+plot(T,v(4,:),'color',k,'LineWidth',1.5)
+xlim([T(1) T(end)])
+title('Infected cell by T7 and M13')
+hold on
+
+subplot(3,2,5)
+plot(T,v(5,:),'color',k,'LineWidth',1.5)
+xlim([T(1) T(end)])
+title('Free T7 phage')
+hold on
+
+subplot(3,2,6)
+plot(T,v(6,:),'color',k,'LineWidth',1.5)
+xlim([T(1) T(end)])
+title('Free M13 phage')
+hold on
+
+
+end
+end
+%%%%%%%%%%%%%%%
+  end
+end
+
