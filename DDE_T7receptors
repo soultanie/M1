@@ -1,0 +1,70 @@
+function v=DDE_M13_T7(t,y,Z)
+
+%%%%%%%%   control parameters   %%%%%%%5%%%%
+
+global S1IN S2IN S3IN D bT m h d D1 D2 D3 ;
+%T1 phage infects through multiple receptors (included teh desired one)
+%T2 infects only through one type of receptor(the desired one)
+%T3 infects through one type receptor (without the desired one)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%SUSCEPTIBLE CELLS
+S1=y(1);  %Susceptible cell to T1,T2,T3
+S2=y(2); % Susceptible cell to T2,T1
+S3=y(3); % Susceptible cell to T1,T3
+
+% INFECTED CELL S1
+I11=y(4); %By T1
+I12=y(5); %By T2
+I13=y(6); %By T3
+
+%INFECTED CELL S2
+I22=y(7); %By T2
+I21=y(8); %By T1
+
+%INFECTED CELL S3
+I31=y(9); %By T1
+I33=y(10); %By T3
+
+%FREE T1 PHAGE
+T1=y(11);
+
+%FREE T2 PHAGE
+T2=y(12);
+
+%FREE T2 PHAGE
+T3=y(13);
+
+
+%%% delay
+
+ylag=Z;
+
+%%%%%%%%%   Solve the model   %%%%%%%%%%%
+v=zeros(12,1);
+
+
+v(1)= (1-(S1<=0)*(D1*S1IN-D*S1 -bT*(T1+T2+T3)<0))*(D1*S1-D*S1 -bT*(T1+T2+T3)*S1);
+v(2)= (1-(S2<=0)*(D2*S2IN-D*S2 -bT*(T1+T2)<0))*(D2*S2IN-D*S2 -bT*(T1+T2)*S2);
+v(3)=(1-(S3<=0)*( D3*S3IN-D*S3-bT*(T1+T3)<0 ))*(D3*S3-D*S3-bT*(T1+T3)*S3);
+v(4)=(1-(I11<=0)*(-D*I11-bT*ylag(11)*ylag(1)+bT*S1*T1   <0))*(-D*I11-bT*ylag(11)*ylag(1)+bT*S1*T1  );
+v(5)=(1-(I12<=0 )*(-D*I12-bT*ylag(12)*ylag(1)+bT*S1*T2   <0))*(-D*I12-bT*ylag(12)*ylag(1)+bT*S1*T2 );
+v(6)=(1-( I13<=0 )*(-D*I13 -bT*ylag(13)*ylag(1)+bT*S1*T3<0))*(-D*I13 -bT*ylag(13)*ylag(1)+bT*S1*T3);
+v(7)=(1-(I22 <=0 )*(-D*I22-bT*ylag(12)*ylag(2)+bT*S2*T2  <0))*(-D*I22-bT*ylag(12)*ylag(2)+bT*S2*T2);
+v(8)=(1-(I21 <=0 )*(-D*I21-bT*ylag(11)*ylag(2)+bT*S2*T1  <0))*(-D*I21-bT*ylag(11)*ylag(2)+bT*S2*T1 );
+
+v(9)=(1-(I31 <=0 )*(-D*I31+bT*S3*T1  <0))*(-D*I31+bT*S3*T1 );
+v(10)=(1-(I33 <=0 )*( -D*I33 +bT*S3*T3<0))*(-D*I33 +bT*S3*T3);
+
+v(11)=(1-(T1 <=0 )*(-D*T1 +(1-m)*h*bT*ylag(11)*ylag(1) +m*h*bT*ylag(13)*ylag(1) +(1-m)*h*bT*ylag(11)*ylag(2) -d*T1 -bT*T1*(S1+S2+S3) <0))*(-D*T1 +(1-m)*h*bT*ylag(11)*ylag(1) +m*h*bT*ylag(13)*ylag(1) +(1-m)*h*bT*ylag(11)*ylag(2) -d*T1 -bT*T1*(S1+S2+S3));
+v(12)= (1-(T2 <=0 )*(-D*T2 +m*h*bT*ylag(11)*ylag(1) + h*bT*ylag(12)*(ylag(1)+ylag(2))+ m*h*bT*ylag(11)*ylag(2) -bT*T2*(S1+S2) -d*T2 <0))*(-D*T2 +m*h*bT*ylag(11)*ylag(1) + h*bT*ylag(12)*(ylag(1)+ylag(2))+ m*h*bT*ylag(11)*ylag(2) -bT*T2*(S1+S2)-d*T2   );
+v(13)=(1-(T3 <=0 )*( -D*T3 +  (1-m)*h*bT*ylag(1)*ylag(13) -d*T3 -bT*T3*S1    <0))*( -D*T3 +  (1-m)*h*bT*ylag(1)*ylag(13) -d*T3 -bT*T3*S1    );
+
+
+
+
+
+
+
+end
