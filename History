@@ -1,0 +1,9 @@
+function h=History(t)
+global S1IN S2IN S3IN T1 T2 T3 ;
+
+if (t<0)
+    h=[S1IN S2IN S3IN 0 0 0 0 0 0 0 0 0 0];
+else if (t==0)
+    h=[S1IN S2IN S3IN 0 0 0 0 0 0 0 T1 T2 T3 ];   
+    end
+end
