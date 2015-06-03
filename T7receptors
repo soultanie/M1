@@ -1,0 +1,84 @@
+clear all
+close all
+
+%%%%%%%%control parameters%%%%%%%%5%%%%
+%Initial Concentrations
+
+global S1IN S2IN S3IN D bT  h m d D1 D2 D3 T1 T2 T3 ;
+S1IN=10^3;
+S2IN=10^3;
+S3IN=10^3;
+S1=S1IN;  %Susceptible cell to T1,T2,T3
+S2=S1IN; % Susceptible cell to T2,T1
+S3=S1IN; % Susceptible cell to T1,T3
+
+% INFECTED CELL S1
+I11=0; %By T1
+I12=0; %By T2
+I13=0; %By T3
+
+%INFECTED CELL S2
+I22=0; %By T2
+I21=0; %By T1
+
+%INFECTED CELL S3
+I31=0; %By T1
+I33=0; %By T3
+
+%FREE T1 PHAGE
+T1=300;
+
+%FREE T2 PHAGE
+T2=0;
+
+%FREE T2 PHAGE
+T3=0;
+
+%%%%%%%%%%%%%%%%%%%%%%%5
+D=0.05; % dilution rate WASH OUT
+
+for D1=0.005:0.005:0.025
+for D2=0.005:0.005:0.025 
+D3=D-D1-D2;
+
+
+%%% binding rate
+
+bT=10^(-4); %% of T7 to S
+
+%%% burst size of T7
+h=100;
+%%% m mutation
+m=10^(-2);
+
+%%% decay rate 
+d=0.009; %%  of M13
+
+%%%%%latent periods%%%%%%%
+lag=17;
+
+
+
+tspan=[0,300];
+
+
+tic
+sol=dde23(@DDE_T7receptors,lag,@History,tspan);
+toc
+
+%%%%%%save solutions in files%%%%%%%%%%%%%%%
+outputFile1 = strcat('t.T1=',num2str(T1),'_T2=',num2str(T2),'_T3=',num2str(T3),'D1=',num2str(D1),'_D2=',num2str(D2),'_D3=',num2str(D3),'.txt');
+fidOF1 = fopen(outputFile1,'w');
+fprintf(fidOF1,'%.4f \t', sol.x);
+fclose(fidOF1);
+
+outputFile2 = strcat('v.T1=',num2str(T1),'_T2=',num2str(T2),'_T3=',num2str(T3),'D1=',num2str(D1),'_D2=',num2str(D2),'_D3=',num2str(D3),'.txt');
+fidOF2 = fopen(outputFile2,'w');
+
+for b=1:size(sol.y,1)
+    fprintf(fidOF2,'%.4f \t',sol.y(b,:));
+    fprintf(fidOF2,'\n');
+end
+fclose(fidOF2);
+end
+end
